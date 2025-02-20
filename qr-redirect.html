@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Redirect</title>
+</head>
+<body>
+  <script>
+    // Get browser and device info from User-Agent
+    const userAgent = navigator.userAgent;
+
+    // Simple parsing (you can refine this further)
+    let device = "Unknown Device";
+    let browser = "Unknown Browser/App";
+
+    // Detect device (basic examples)
+    if (/iPhone|iPad|iPod/i.test(userAgent)) device = "iPhone/iPad";
+    else if (/Android/i.test(userAgent)) device = "Android";
+    else if (/Windows/i.test(userAgent)) device = "Windows Device";
+    else if (/Macintosh|Mac OS/i.test(userAgent)) device = "Mac";
+
+    // Detect browser (basic examples)
+    if (/Chrome/i.test(userAgent)) browser = "Chrome";
+    else if (/Safari/i.test(userAgent) && !/Chrome/i.test(userAgent)) browser = "Safari";
+    else if (/Firefox/i.test(userAgent)) browser = "Firefox";
+    else if (/Edg/i.test(userAgent)) browser = "Edge";
+    else if (/QR|Scan/i.test(userAgent)) browser = "QR Scanner App"; // Rough guess for QR apps
+
+    // Your Google Apps Script URL
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbyn74NbHibh_IFNEa-wbgGT57m-11I_mf87F8t1vyd1ssqc3LVhWDsQmQqNQ5VSFxZm/exec";
+
+    // Redirect with detected info (and a sample code)
+    const redirectUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=ABC123&browser=${encodeURIComponent(browser)}`;
+    window.location.href = redirectUrl;
+  </script>
+</body>
+</html>
