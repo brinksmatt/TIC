@@ -4,8 +4,8 @@
   <script>
     var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     var redirectUrl = isMobile 
-      ? "whatsapp://send?phone=+447350273595&text=Hello+from+Google+Apps+Script" 
-      : "https://wa.me/+447350273595?text=Hello+from+Google+Apps+Script";
+      ? "whatsapp://send?phone=+447350273595&text=Here's+my+question: "
+      : "https://wa.me/+447350273595?text=Here's+my+question: ";
     window.location.href = redirectUrl;
     setTimeout(function() {
       document.getElementById("fallback").style.display = "block";
