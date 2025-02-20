@@ -1,68 +1,30 @@
-<html>
-<head>
-  <title>Redirecting...</title>
-  <script>
-    function logScanAndRedirect() {
-      // Get browser and device info from User-Agent
-      const userAgent = navigator.userAgent;
+const SPREADSHEET_ID = "1XBO71uDcFsbAWvmb8PVVApsbGcQnHsy_8Wfo9DVDf5w";
+const SHEET_NAME = "Sheet1";
 
-      // Simple parsing for device and browser
-      let device = "Unknown Device";
-      let browser = "Unknown Browser/App";
-
-      // Detect device
-      if (/iPhone|iPad|iPod/i.test(userAgent)) device = "iPhone/iPad";
-      else if (/Android/i.test(userAgent)) device = "Android";
-      else if (/Windows/i.test(userAgent)) device = "Windows Device";
-      else if (/Macintosh|Mac OS/i.test(userAgent)) device = "Mac";
-
-      // Detect browser
-      if (/Chrome/i.test(userAgent)) browser = "Chrome";
-      else if (/Safari/i.test(userAgent) && !/Chrome/i.test(userAgent)) browser = "Safari";
-      else if (/Firefox/i.test(userAgent)) browser = "Firefox";
-      else if (/Edg/i.test(userAgent)) browser = "Edge";
-      else if (/QR|Scan/i.test(userAgent)) browser = "QR Scanner App";
-
-      // QR code identifier
-      const code = "TIC-QR";
-
-      // Google Apps Script URL (your original one)
-      const scriptUrl = "https://script.google.com/macros/s/AKfycbyn74NbHibh_IFNEa-wbgGT57m-11I_mf87F8t1vyd1ssqc3LVhWDsQmQqNQ5VSFxZm/exec";
-
-      // WhatsApp redirect URL
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(userAgent);
-      const whatsappUrl = isMobile 
-        ? "whatsapp://send?phone=+447350273595&text=Here's+my+question:%20"
-        : "https://wa.me/+447350273595?text=Here's+my+question:%20";
-
-      // Log data to Google Spreadsheet via GET request
-      const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}`;
-      
-      // Send the log request (fire and forget)
-      fetch(logUrl, { method: "GET" })
-        .then(response => response.text())
-        .then(() => {
-          // After logging, redirect to WhatsApp
-          window.location.href = whatsappUrl;
-        })
-        .catch(() => {
-          // If logging fails, still redirect to WhatsApp
-          window.location.href = whatsappUrl;
-        });
-
-      // Fallback link after 2 seconds
-      setTimeout(function() {
-        document.getElementById("fallback").style.display = "block";
-      }, 2000);
+function doGet(e) {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    
+    const params = e.parameter;
+    const device = params.device || "Unknown Device";
+    const code = params.code || "Unknown Code";
+    const browser = params.browser || params.app || "Unknown Browser/App";
+    
+    const timestamp = new Date();
+    const lastRow = sheet.getLastRow();
+    let scanCount = 1;
+    if (lastRow > 1) {
+      const previousCount = sheet.getRange(lastRow, 5).getValue();
+      scanCount = Number(previousCount) + 1;
     }
-
-    window.onload = logScanAndRedirect;
-  </script>
-</head>
-<body>
-  <p>Redirecting to WhatsApp...</p>
-  <p id="fallback" style="display:none;">
-    Not redirecting? <a href="https://wa.me/+447350273595?text=Here's+my+question:%20" target="_blank">Click here</a>
-  </p>
-</body>
-</html>
+    
+    const rowData = [timestamp, device, code, browser, scanCount];
+    sheet.appendRow(rowData);
+    
+    return ContentService.createTextOutput("Data logged successfully").setMimeType(ContentService.MimeType.TEXT);
+  } catch (error) {
+    Logger.log("Error: " + error.toString());
+    return ContentService.createTextOutput("Error: " + error.toString()).setMimeType(ContentService.MimeType.TEXT);
+  }
+}
