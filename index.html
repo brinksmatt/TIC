@@ -3,7 +3,6 @@
   <title>Redirecting...</title>
   <script>
     function logScanAndRedirect() {
-      // Check if this session already logged
       if (sessionStorage.getItem("hasLogged")) {
         console.log("Session already logged, skipping");
         window.location.href = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) 
@@ -44,25 +43,57 @@
         ? "whatsapp://send?phone=+447350273595&text=Here's+my+question:%20"
         : "https://wa.me/+447350273595?text=Here's+my+question:%20";
 
-      const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}`;
-      console.log("Logging to: " + logUrl);
+      // Fetch IP and location
+      fetch("https://api.ipify.org?format=json")
+        .then(response => response.json())
+        .then(ipData => {
+          const ip = ipData.ip || "Unknown IP";
+          console.log("IP Address: " + ip);
 
-      fetch(logUrl, { method: "GET" })
-        .then(response => {
-          console.log("Fetch response status: " + response.status);
-          return response.text();
-        })
-        .then(text => {
-          console.log("Log response: " + text);
-          sessionStorage.setItem("hasLogged", "true"); // Mark as logged
-          console.log("Redirecting to WhatsApp now");
-          window.location.href = whatsappUrl;
+          // Fetch location based on IP
+          return fetch(`https://ipapi.co/${ip}/json/`)
+            .then(response => response.json())
+            .then(locationData => {
+              const location = locationData.city && locationData.country_name 
+                ? `${locationData.city}, ${locationData.country_name}` 
+                : "Unknown Location";
+              console.log("Location: " + location);
+
+              // Log all data
+              const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}&ip=${encodeURIComponent(ip)}&location=${encodeURIComponent(location)}`;
+              console.log("Logging to: " + logUrl);
+
+              return fetch(logUrl, { method: "GET" })
+                .then(response => {
+                  console.log("Fetch response status: " + response.status);
+                  return response.text();
+                })
+                .then(text => {
+                  console.log("Log response: " + text);
+                  sessionStorage.setItem("hasLogged", "true");
+                  console.log("Redirecting to WhatsApp now");
+                  window.location.href = whatsappUrl;
+                });
+            });
         })
         .catch(error => {
-          console.error("Fetch error: " + error);
-          sessionStorage.setItem("hasLogged", "true"); // Mark even on error
-          console.log("Redirecting to WhatsApp despite error");
-          window.location.href = whatsappUrl;
+          console.error("IP/Location fetch error: " + error);
+          // Log without IP/location if fetch fails
+          const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}&ip=Unknown&location=Unknown`;
+          console.log("Fallback logging to: " + logUrl);
+
+          fetch(logUrl, { method: "GET" })
+            .then(response => response.text())
+            .then(text => {
+              console.log("Log response: " + text);
+              sessionStorage.setItem("hasLogged", "true");
+              window.location.href = whatsappUrl;
+            })
+            .catch(err => {
+              console.error("Fallback fetch error: " + err);
+              sessionStorage.setItem("hasLogged", "true");
+              window.location.href = whatsappUrl;
+            });
         });
     }
 
