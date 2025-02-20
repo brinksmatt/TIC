@@ -2,7 +2,14 @@
 <head>
   <title>Redirecting...</title>
   <script>
+    let hasRun = false; // Flag to prevent multiple runs
+
     function logScanAndRedirect() {
+      if (hasRun) {
+        console.log("Already ran, skipping duplicate execution");
+        return; // Exit if already executed
+      }
+      hasRun = true;
       console.log("Starting logScanAndRedirect");
 
       const userAgent = navigator.userAgent;
@@ -11,15 +18,13 @@
       let device = "Unknown Device";
       let browser = "Unknown Browser/App";
 
-      // Device detection
       if (/Android/i.test(userAgent)) device = "Android";
       else if (/iPhone|iPad|iPod/i.test(userAgent)) device = "iPhone/iPad";
       else if (/Windows/i.test(userAgent)) device = "Windows Device";
       else if (/Macintosh|Mac OS/i.test(userAgent)) device = "Mac";
 
-      // Browser detection
-      if (/CriOS/i.test(userAgent)) browser = "Chrome"; // Chrome iOS
-      else if (/Chrome/i.test(userAgent)) browser = "Chrome"; // Chrome Android/Desktop
+      if (/CriOS/i.test(userAgent)) browser = "Chrome";
+      else if (/Chrome/i.test(userAgent)) browser = "Chrome";
       else if (/Firefox/i.test(userAgent)) browser = "Firefox";
       else if (/Edg/i.test(userAgent)) browser = "Edge";
       else if (/SamsungBrowser/i.test(userAgent)) browser = "Samsung Internet";
@@ -31,7 +36,7 @@
       console.log("Detected Device: " + device);
       console.log("Detected Browser: " + browser);
 
-      const code = "TICQR1"; // QR code identifier
+      const code = "TICQR1";
       const scriptUrl = "https://script.google.com/macros/s/AKfycbyn74NbHibh_IFNEa-wbgGT57m-11I_mf87F8t1vyd1ssqc3LVhWDsQmQqNQ5VSFxZm/exec";
       const whatsappUrl = /iPhone|iPad|iPod|Android/i.test(userAgent) 
         ? "whatsapp://send?phone=+447350273595&text=Here's+my+question:%20"
