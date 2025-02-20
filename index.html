@@ -2,14 +2,16 @@
 <head>
   <title>Redirecting...</title>
   <script>
-    let hasRun = false; // Flag to prevent multiple runs
-
     function logScanAndRedirect() {
-      if (hasRun) {
-        console.log("Already ran, skipping duplicate execution");
-        return; // Exit if already executed
+      // Check if this session already logged
+      if (sessionStorage.getItem("hasLogged")) {
+        console.log("Session already logged, skipping");
+        window.location.href = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) 
+          ? "whatsapp://send?phone=+447350273595&text=Here's+my+question:%20"
+          : "https://wa.me/+447350273595?text=Here's+my+question:%20";
+        return;
       }
-      hasRun = true;
+
       console.log("Starting logScanAndRedirect");
 
       const userAgent = navigator.userAgent;
@@ -52,11 +54,13 @@
         })
         .then(text => {
           console.log("Log response: " + text);
+          sessionStorage.setItem("hasLogged", "true"); // Mark as logged
           console.log("Redirecting to WhatsApp now");
           window.location.href = whatsappUrl;
         })
         .catch(error => {
           console.error("Fetch error: " + error);
+          sessionStorage.setItem("hasLogged", "true"); // Mark even on error
           console.log("Redirecting to WhatsApp despite error");
           window.location.href = whatsappUrl;
         });
