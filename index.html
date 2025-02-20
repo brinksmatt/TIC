@@ -11,15 +11,21 @@
       let device = "Unknown Device";
       let browser = "Unknown Browser/App";
 
+      // Device detection
       if (/iPhone|iPad|iPod/i.test(userAgent)) device = "iPhone/iPad";
       else if (/Android/i.test(userAgent)) device = "Android";
       else if (/Windows/i.test(userAgent)) device = "Windows Device";
       else if (/Macintosh|Mac OS/i.test(userAgent)) device = "Mac";
 
-      if (/Chrome/i.test(userAgent)) browser = "Chrome";
-      else if (/Safari/i.test(userAgent) && !/Chrome/i.test(userAgent)) browser = "Safari";
+      // Browser detection (more specific first)
+      if (/CriOS/i.test(userAgent)) browser = "Chrome"; // Chrome iOS
+      else if (/Chrome/i.test(userAgent)) browser = "Chrome"; // Chrome Android/Desktop
       else if (/Firefox/i.test(userAgent)) browser = "Firefox";
       else if (/Edg/i.test(userAgent)) browser = "Edge";
+      else if (/SamsungBrowser/i.test(userAgent)) browser = "Samsung Internet";
+      else if (/UCBrowser|UCWEB/i.test(userAgent)) browser = "UC Browser";
+      else if (/Opera|OPR/i.test(userAgent)) browser = "Opera";
+      else if (/Safari/i.test(userAgent)) browser = "Safari"; // Safari last, as it’s common in WebKit
       else if (/QR|Scan/i.test(userAgent)) browser = "QR Scanner App";
 
       console.log("Detected Device: " + device);
