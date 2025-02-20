@@ -2,20 +2,46 @@
 <head>
   <title>Redirecting...</title>
   <script>
-    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    var redirectUrl = isMobile 
-      ? "whatsapp://send?phone=+447350273595&text=Here's+my+question:%20%20"
-      : "https://wa.me/+447350273595?text=Here's+my+question:%20%20";
-    window.location.href = redirectUrl;
-    setTimeout(function() {
-      document.getElementById("fallback").style.display = "block";
-    }, 2000);
+    function logScanAndRedirect() {
+      var timestamp = new Date().toISOString();
+      var device = navigator.userAgent;
+      var code = "TIC-QR";
+      var browserApp = navigator.appVersion;
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      var redirectUrl = isMobile 
+        ? "whatsapp://send?phone=+447350273595&text=Here's+my+question: "
+        : "https://wa.me/+447350273595?text=Here's+my+question: ";
+
+      var scanData = {
+        timestamp: timestamp,
+        device: device,
+        code: code,
+        browserApp: browserApp,
+        scanCount: 1
+      };
+
+      // Send log request to Google Apps Script
+      fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(scanData)
+      })
+      .then(response => response.text())
+      .then(() => window.location.href = redirectUrl)
+      .catch(() => window.location.href = redirectUrl);
+
+      setTimeout(function() {
+        document.getElementById("fallback").style.display = "block";
+      }, 2000);
+    }
+
+    window.onload = logScanAndRedirect;
   </script>
 </head>
 <body>
   <p>Redirecting to WhatsApp...</p>
   <p id="fallback" style="display:none;">
-    Not redirecting? <a href="https://wa.me/+447350273595?text=Here's+my+question:%20%20" target="_blank">Click here</a>
+    Not redirecting? <a href="https://wa.me/+447350273595?text=Here's+my+question: " target="_blank">Click here</a>
   </p>
 </body>
 </html>
