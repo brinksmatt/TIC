@@ -1,6 +1,11 @@
 <html>
 <head>
-  <meta http-equiv="refresh" content="0;url=whatsapp://send?phone=+447350273595">
+  <title>Redirecting...</title>
+  <script>
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    var redirectUrl = isMobile ? "whatsapp://send?phone=+447350273595" : "https://wa.me/+447350273595";
+    window.location.href = redirectUrl;
+  </script>
 </head>
 <body>
   <p>Redirecting to WhatsApp...</p>
