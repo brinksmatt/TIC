@@ -27,15 +27,16 @@
       const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}`;
       console.log("Attempting to log: " + logUrl);
 
+      // Log data and redirect
       fetch(logUrl, { method: "GET" })
         .then(response => response.text())
         .then(text => {
           console.log("Log response: " + text);
-          window.location.href = whatsappUrl;
+          window.location.href = whatsappUrl; // Redirect immediately after success
         })
         .catch(error => {
           console.error("Log error: " + error);
-          window.location.href = whatsappUrl;
+          window.location.href = whatsappUrl; // Redirect even if logging fails
         });
     }
 
