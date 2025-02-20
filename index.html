@@ -3,33 +3,54 @@
   <title>Redirecting...</title>
   <script>
     function logScanAndRedirect() {
-      var timestamp = new Date().toISOString();
-      var device = navigator.userAgent;
-      var code = "TIC-QR";
-      var browserApp = navigator.appVersion;
-      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      var redirectUrl = isMobile 
-        ? "whatsapp://send?phone=+447350273595&text=Here's+my+question: "
-        : "https://wa.me/+447350273595?text=Here's+my+question: ";
+      // Get browser and device info from User-Agent
+      const userAgent = navigator.userAgent;
 
-      var scanData = {
-        timestamp: timestamp,
-        device: device,
-        code: code,
-        browserApp: browserApp,
-        scanCount: 1
-      };
+      // Simple parsing for device and browser
+      let device = "Unknown Device";
+      let browser = "Unknown Browser/App";
 
-      // Send log request to Google Apps Script
-      fetch("https://script.google.com/macros/s/AKfycby_8kFYd2sy0hiXvjLQo3GsAFLWt3DO2eq7ml1LmZ3H6rkcSlHmLGCYTkPwx8xmrMU/exec", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(scanData)
-      })
-      .then(response => response.text())
-      .then(() => window.location.href = redirectUrl)
-      .catch(() => window.location.href = redirectUrl);
+      // Detect device
+      if (/iPhone|iPad|iPod/i.test(userAgent)) device = "iPhone/iPad";
+      else if (/Android/i.test(userAgent)) device = "Android";
+      else if (/Windows/i.test(userAgent)) device = "Windows Device";
+      else if (/Macintosh|Mac OS/i.test(userAgent)) device = "Mac";
 
+      // Detect browser
+      if (/Chrome/i.test(userAgent)) browser = "Chrome";
+      else if (/Safari/i.test(userAgent) && !/Chrome/i.test(userAgent)) browser = "Safari";
+      else if (/Firefox/i.test(userAgent)) browser = "Firefox";
+      else if (/Edg/i.test(userAgent)) browser = "Edge";
+      else if (/QR|Scan/i.test(userAgent)) browser = "QR Scanner App";
+
+      // QR code identifier
+      const code = "TIC-QR";
+
+      // Google Apps Script URL (your original one)
+      const scriptUrl = "https://script.google.com/macros/s/AKfycbyn74NbHibh_IFNEa-wbgGT57m-11I_mf87F8t1vyd1ssqc3LVhWDsQmQqNQ5VSFxZm/exec";
+
+      // WhatsApp redirect URL
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(userAgent);
+      const whatsappUrl = isMobile 
+        ? "whatsapp://send?phone=+447350273595&text=Here's+my+question:%20"
+        : "https://wa.me/+447350273595?text=Here's+my+question:%20";
+
+      // Log data to Google Spreadsheet via GET request
+      const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}`;
+      
+      // Send the log request (fire and forget)
+      fetch(logUrl, { method: "GET" })
+        .then(response => response.text())
+        .then(() => {
+          // After logging, redirect to WhatsApp
+          window.location.href = whatsappUrl;
+        })
+        .catch(() => {
+          // If logging fails, still redirect to WhatsApp
+          window.location.href = whatsappUrl;
+        });
+
+      // Fallback link after 2 seconds
       setTimeout(function() {
         document.getElementById("fallback").style.display = "block";
       }, 2000);
@@ -41,7 +62,7 @@
 <body>
   <p>Redirecting to WhatsApp...</p>
   <p id="fallback" style="display:none;">
-    Not redirecting? <a href="https://wa.me/+447350273595?text=Here's+my+question: " target="_blank">Click here</a>
+    Not redirecting? <a href="https://wa.me/+447350273595?text=Here's+my+question:%20" target="_blank">Click here</a>
   </p>
 </body>
 </html>
