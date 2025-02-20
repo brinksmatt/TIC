@@ -3,6 +3,8 @@
   <title>Redirecting...</title>
   <script>
     function logScanAndRedirect() {
+      console.log("Starting logScanAndRedirect");
+
       const userAgent = navigator.userAgent;
       let device = "Unknown Device";
       let browser = "Unknown Browser/App";
@@ -25,18 +27,23 @@
         : "https://wa.me/+447350273595?text=Here's+my+question:%20";
 
       const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}`;
-      console.log("Attempting to log: " + logUrl);
+      console.log("Logging to: " + logUrl);
+      console.log("WhatsApp URL: " + whatsappUrl);
 
-      // Log data and redirect
       fetch(logUrl, { method: "GET" })
-        .then(response => response.text())
+        .then(response => {
+          console.log("Fetch response status: " + response.status);
+          return response.text();
+        })
         .then(text => {
           console.log("Log response: " + text);
-          window.location.href = whatsappUrl; // Redirect immediately after success
+          console.log("Redirecting to WhatsApp now");
+          window.location.href = whatsappUrl;
         })
         .catch(error => {
-          console.error("Log error: " + error);
-          window.location.href = whatsappUrl; // Redirect even if logging fails
+          console.error("Fetch error: " + error);
+          console.log("Redirecting to WhatsApp despite error");
+          window.location.href = whatsappUrl;
         });
     }
 
