@@ -6,6 +6,8 @@
       console.log("Starting logScanAndRedirect");
 
       const userAgent = navigator.userAgent;
+      console.log("Raw User-Agent: " + userAgent);
+
       let device = "Unknown Device";
       let browser = "Unknown Browser/App";
 
@@ -20,6 +22,9 @@
       else if (/Edg/i.test(userAgent)) browser = "Edge";
       else if (/QR|Scan/i.test(userAgent)) browser = "QR Scanner App";
 
+      console.log("Detected Device: " + device);
+      console.log("Detected Browser: " + browser);
+
       const code = "TIC-QR";
       const scriptUrl = "https://script.google.com/macros/s/AKfycbyn74NbHibh_IFNEa-wbgGT57m-11I_mf87F8t1vyd1ssqc3LVhWDsQmQqNQ5VSFxZm/exec";
       const whatsappUrl = /iPhone|iPad|iPod|Android/i.test(userAgent) 
@@ -28,7 +33,6 @@
 
       const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}`;
       console.log("Logging to: " + logUrl);
-      console.log("WhatsApp URL: " + whatsappUrl);
 
       fetch(logUrl, { method: "GET" })
         .then(response => {
