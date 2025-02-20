@@ -31,7 +31,7 @@
       console.log("Detected Device: " + device);
       console.log("Detected Browser: " + browser);
 
-      const code = "TICQR1"; // Changed from "TIC-QR" to "TICQR1"
+      const code = "TICQR1"; // QR code identifier
       const scriptUrl = "https://script.google.com/macros/s/AKfycbyn74NbHibh_IFNEa-wbgGT57m-11I_mf87F8t1vyd1ssqc3LVhWDsQmQqNQ5VSFxZm/exec";
       const whatsappUrl = /iPhone|iPad|iPod|Android/i.test(userAgent) 
         ? "whatsapp://send?phone=+447350273595&text=Here's+my+question:%20"
@@ -61,6 +61,6 @@
   </script>
 </head>
 <body>
-  <p>Redirecting to WhatsApp...</p>
+  <p style="font-size: 20px;">Redirecting to WhatsApp...</p>
 </body>
 </html>
