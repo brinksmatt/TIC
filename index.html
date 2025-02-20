@@ -2,9 +2,11 @@
 <head>
   <title>Redirecting...</title>
   <script>
-    var redirectUrl = "https://wa.me/+447350273595";
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    var redirectUrl = isMobile 
+      ? "whatsapp://send?phone=+447350273595&text=Hello+from+Google+Apps+Script" 
+      : "https://wa.me/+447350273595?text=Hello+from+Google+Apps+Script";
     window.location.href = redirectUrl;
-    // Show fallback if redirect fails after 2 seconds
     setTimeout(function() {
       document.getElementById("fallback").style.display = "block";
     }, 2000);
@@ -13,7 +15,7 @@
 <body>
   <p>Redirecting to WhatsApp...</p>
   <p id="fallback" style="display:none;">
-    Not redirecting? <a href="https://wa.me/+447350273595" target="_blank">Click here</a>
+    Not redirecting? <a href="https://wa.me/+447350273595?text=Hello+from+Google+Apps+Script" target="_blank">Click here</a>
   </p>
 </body>
 </html>
