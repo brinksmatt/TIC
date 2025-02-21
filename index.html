@@ -1,6 +1,26 @@
 <html>
 <head>
   <title>Redirecting...</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh; /* Full viewport height */
+    }
+    img {
+      width: 100vw; /* Full viewport width */
+      height: auto; /* Maintain aspect ratio */
+      max-width: 100%; /* Prevent overflow */
+    }
+    p {
+      margin-top: 10px;
+      font-size: 16px; /* Default text size, adjustable */
+    }
+  </style>
   <script>
     function logScanAndRedirect() {
       if (sessionStorage.getItem("hasLogged")) {
@@ -152,9 +172,7 @@
   </script>
 </head>
 <body>
-  <div style="text-align: center;">
-    <img src="TIC.jpg" alt="Redirecting..." style="max-width: 100px; margin-bottom: 10px;">
-    <p>Redirecting to WhatsApp...</p>
-  </div>
+  <img src="TIC.jpg" alt="Redirecting...">
+  <p>Redirecting to WhatsApp...</p>
 </body>
 </html>
