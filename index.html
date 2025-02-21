@@ -98,6 +98,8 @@
       const language = navigator.language || "Unknown Language";
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown Time Zone";
       const network = navigator.connection ? navigator.connection.effectiveType || "Unknown Network" : "Unknown Network";
+      const downlink = navigator.connection ? navigator.connection.downlink || "Unknown Downlink" : "Unknown Downlink";
+      const rtt = navigator.connection ? navigator.connection.rtt || "Unknown RTT" : "Unknown RTT";
       const platform = navigator.platform || "Unknown Platform";
       const referrer = document.referrer || "Direct";
       const colorDepth = window.screen.colorDepth || "Unknown Color Depth";
@@ -112,6 +114,8 @@
       console.log("Language: " + language);
       console.log("Time Zone: " + timeZone);
       console.log("Network: " + network);
+      console.log("Downlink: " + downlink);
+      console.log("RTT: " + rtt);
       console.log("Platform: " + platform);
       console.log("Referrer: " + referrer);
       console.log("Color Depth: " + colorDepth);
@@ -119,7 +123,7 @@
       console.log("Raw User Agent: " + rawUserAgent);
 
       const code = "TICQR1";
-      const scriptUrl = "https://script.google.com/macros/s/AKfycbxnEpPe9BjSFMZWj2O66d9zacMLNPGnRcjg6IfddUe0O0XUh9lMJ2CRptL6r-eNLDXK/exec";
+      const scriptUrl = "https://script.google.com/macros/s/AKfycbxqthhcNEjCv-GQHQj3ZqBCVrbY0Xt-daVQf3-xt3pLxKJN1sURgwY0PKQk5NJCApuL/exec"; // New URL
 
       fetch("https://api.ipify.org?format=json")
         .then(response => response.json())
@@ -135,7 +139,7 @@
                 : "Unknown Location";
               console.log("Location: " + location);
 
-              const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}&ip=${encodeURIComponent(ip)}&location=${encodeURIComponent(location)}&os=${encodeURIComponent(osVersion)}&screen=${encodeURIComponent(screen)}&lang=${encodeURIComponent(language)}&tz=${encodeURIComponent(timeZone)}&net=${encodeURIComponent(network)}&bver=${encodeURIComponent(browserVersion)}&plat=${encodeURIComponent(platform)}&ref=${encodeURIComponent(referrer)}&color=${encodeURIComponent(colorDepth)}&pix=${encodeURIComponent(pixelRatio)}&ua=${encodeURIComponent(rawUserAgent)}`;
+              const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}&ip=${encodeURIComponent(ip)}&location=${encodeURIComponent(location)}&os=${encodeURIComponent(osVersion)}&screen=${encodeURIComponent(screen)}&lang=${encodeURIComponent(language)}&tz=${encodeURIComponent(timeZone)}&net=${encodeURIComponent(network)}&down=${encodeURIComponent(downlink)}&rtt=${encodeURIComponent(rtt)}&bver=${encodeURIComponent(browserVersion)}&plat=${encodeURIComponent(platform)}&ref=${encodeURIComponent(referrer)}&color=${encodeURIComponent(colorDepth)}&pix=${encodeURIComponent(pixelRatio)}&ua=${encodeURIComponent(rawUserAgent)}`;
               console.log("Logging to: " + logUrl);
 
               return fetch(logUrl, { method: "GET" })
@@ -151,7 +155,7 @@
         })
         .catch(error => {
           console.error("IP/Location fetch error: " + error);
-          const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}&ip=Unknown&location=Unknown&os=${encodeURIComponent(osVersion)}&screen=${encodeURIComponent(screen)}&lang=${encodeURIComponent(language)}&tz=${encodeURIComponent(timeZone)}&net=${encodeURIComponent(network)}&bver=${encodeURIComponent(browserVersion)}&plat=${encodeURIComponent(platform)}&ref=${encodeURIComponent(referrer)}&color=${encodeURIComponent(colorDepth)}&pix=${encodeURIComponent(pixelRatio)}&ua=${encodeURIComponent(rawUserAgent)}`;
+          const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}&ip=Unknown&location=Unknown&os=${encodeURIComponent(osVersion)}&screen=${encodeURIComponent(screen)}&lang=${encodeURIComponent(language)}&tz=${encodeURIComponent(timeZone)}&net=${encodeURIComponent(network)}&down=${encodeURIComponent(downlink)}&rtt=${encodeURIComponent(rtt)}&bver=${encodeURIComponent(browserVersion)}&plat=${encodeURIComponent(platform)}&ref=${encodeURIComponent(referrer)}&color=${encodeURIComponent(colorDepth)}&pix=${encodeURIComponent(pixelRatio)}&ua=${encodeURIComponent(rawUserAgent)}`;
           console.log("Fallback logging to: " + logUrl);
 
           fetch(logUrl, { method: "GET" })
