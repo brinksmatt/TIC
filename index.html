@@ -18,9 +18,9 @@
 
       let device = "Unknown Device";
       let browser = "Unknown Browser/App";
+      let browserVersion = "Unknown Version";
       let osVersion = "Unknown OS";
 
-      // Device and OS detection
       if (/Android/i.test(userAgent)) {
         device = "Android";
         const osMatch = userAgent.match(/Android\s([\d\.]+)/);
@@ -37,33 +37,68 @@
         device = "Mac";
         const osMatch = userAgent.match(/Mac OS X\s([\d_]+)/);
         osVersion = osMatch ? osMatch[1].replace(/_/g, '.') : "Unknown MacOS";
-      } else {
-        device = "Other Device";
-        osVersion = userAgent.match(/OS\s([\d_]+)/)?.[1]?.replace(/_/g, '.') || "Unknown OS";
       }
 
-      if (/CriOS/i.test(userAgent)) browser = "Chrome";
-      else if (/Chrome/i.test(userAgent)) browser = "Chrome";
-      else if (/Firefox/i.test(userAgent)) browser = "Firefox";
-      else if (/Edg/i.test(userAgent)) browser = "Edge";
-      else if (/SamsungBrowser/i.test(userAgent)) browser = "Samsung Internet";
-      else if (/UCBrowser|UCWEB/i.test(userAgent)) browser = "UC Browser";
-      else if (/Opera|OPR/i.test(userAgent)) browser = "Opera";
-      else if (/Safari/i.test(userAgent)) browser = "Safari";
-      else if (/QR|Scan/i.test(userAgent)) browser = "QR Scanner App";
+      if (/CriOS/i.test(userAgent)) {
+        browser = "Chrome";
+        const verMatch = userAgent.match(/CriOS\/([\d\.]+)/);
+        browserVersion = verMatch ? verMatch[1] : "Unknown Chrome";
+      } else if (/Chrome/i.test(userAgent)) {
+        browser = "Chrome";
+        const verMatch = userAgent.match(/Chrome\/([\d\.]+)/);
+        browserVersion = verMatch ? verMatch[1] : "Unknown Chrome";
+      } else if (/Firefox/i.test(userAgent)) {
+        browser = "Firefox";
+        const verMatch = userAgent.match(/Firefox\/([\d\.]+)/);
+        browserVersion = verMatch ? verMatch[1] : "Unknown Firefox";
+      } else if (/Edg/i.test(userAgent)) {
+        browser = "Edge";
+        const verMatch = userAgent.match(/Edg\/([\d\.]+)/);
+        browserVersion = verMatch ? verMatch[1] : "Unknown Edge";
+      } else if (/SamsungBrowser/i.test(userAgent)) {
+        browser = "Samsung Internet";
+        const verMatch = userAgent.match(/SamsungBrowser\/([\d\.]+)/);
+        browserVersion = verMatch ? verMatch[1] : "Unknown Samsung";
+      } else if (/UCBrowser|UCWEB/i.test(userAgent)) {
+        browser = "UC Browser";
+        const verMatch = userAgent.match(/UCBrowser\/([\d\.]+)/);
+        browserVersion = verMatch ? verMatch[1] : "Unknown UC";
+      } else if (/Opera|OPR/i.test(userAgent)) {
+        browser = "Opera";
+        const verMatch = userAgent.match(/(Opera|OPR)\/([\d\.]+)/);
+        browserVersion = verMatch ? verMatch[2] : "Unknown Opera";
+      } else if (/Safari/i.test(userAgent)) {
+        browser = "Safari";
+        const verMatch = userAgent.match(/Version\/([\d\.]+)/);
+        browserVersion = verMatch ? verMatch[1] : "Unknown Safari";
+      } else if (/QR|Scan/i.test(userAgent)) {
+        browser = "QR Scanner App";
+        browserVersion = "N/A";
+      }
 
       const screen = `${window.screen.width}x${window.screen.height}` || "Unknown Screen";
       const language = navigator.language || "Unknown Language";
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown Time Zone";
       const network = navigator.connection ? navigator.connection.effectiveType || "Unknown Network" : "Unknown Network";
+      const platform = navigator.platform || "Unknown Platform";
+      const referrer = document.referrer || "Direct";
+      const colorDepth = window.screen.colorDepth || "Unknown Color Depth";
+      const pixelRatio = window.devicePixelRatio || "Unknown Pixel Ratio";
+      const rawUserAgent = userAgent;
 
       console.log("Detected Device: " + device);
       console.log("Detected Browser: " + browser);
+      console.log("Browser Version: " + browserVersion);
       console.log("OS Version: " + osVersion);
       console.log("Screen: " + screen);
       console.log("Language: " + language);
       console.log("Time Zone: " + timeZone);
       console.log("Network: " + network);
+      console.log("Platform: " + platform);
+      console.log("Referrer: " + referrer);
+      console.log("Color Depth: " + colorDepth);
+      console.log("Pixel Ratio: " + pixelRatio);
+      console.log("Raw User Agent: " + rawUserAgent);
 
       const code = "TICQR1";
       const scriptUrl = "https://script.google.com/macros/s/AKfycbxnEpPe9BjSFMZWj2O66d9zacMLNPGnRcjg6IfddUe0O0XUh9lMJ2CRptL6r-eNLDXK/exec";
@@ -82,7 +117,7 @@
                 : "Unknown Location";
               console.log("Location: " + location);
 
-              const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}&ip=${encodeURIComponent(ip)}&location=${encodeURIComponent(location)}&os=${encodeURIComponent(osVersion)}&screen=${encodeURIComponent(screen)}&lang=${encodeURIComponent(language)}&tz=${encodeURIComponent(timeZone)}&net=${encodeURIComponent(network)}`;
+              const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}&ip=${encodeURIComponent(ip)}&location=${encodeURIComponent(location)}&os=${encodeURIComponent(osVersion)}&screen=${encodeURIComponent(screen)}&lang=${encodeURIComponent(language)}&tz=${encodeURIComponent(timeZone)}&net=${encodeURIComponent(network)}&bver=${encodeURIComponent(browserVersion)}&plat=${encodeURIComponent(platform)}&ref=${encodeURIComponent(referrer)}&color=${encodeURIComponent(colorDepth)}&pix=${encodeURIComponent(pixelRatio)}&ua=${encodeURIComponent(rawUserAgent)}`;
               console.log("Logging to: " + logUrl);
 
               return fetch(logUrl, { method: "GET" })
@@ -98,7 +133,7 @@
         })
         .catch(error => {
           console.error("IP/Location fetch error: " + error);
-          const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}&ip=Unknown&location=Unknown&os=${encodeURIComponent(osVersion)}&screen=${encodeURIComponent(screen)}&lang=${encodeURIComponent(language)}&tz=${encodeURIComponent(timeZone)}&net=${encodeURIComponent(network)}`;
+          const logUrl = `${scriptUrl}?device=${encodeURIComponent(device)}&code=${encodeURIComponent(code)}&browser=${encodeURIComponent(browser)}&ip=Unknown&location=Unknown&os=${encodeURIComponent(osVersion)}&screen=${encodeURIComponent(screen)}&lang=${encodeURIComponent(language)}&tz=${encodeURIComponent(timeZone)}&net=${encodeURIComponent(network)}&bver=${encodeURIComponent(browserVersion)}&plat=${encodeURIComponent(platform)}&ref=${encodeURIComponent(referrer)}&color=${encodeURIComponent(colorDepth)}&pix=${encodeURIComponent(pixelRatio)}&ua=${encodeURIComponent(rawUserAgent)}`;
           console.log("Fallback logging to: " + logUrl);
 
           fetch(logUrl, { method: "GET" })
@@ -117,6 +152,9 @@
   </script>
 </head>
 <body>
-  <p>Redirecting to WhatsApp...</p>
+  <div style="text-align: center;">
+    <img src="TIC.jpg" alt="Redirecting..." style="max-width: 100px; margin-bottom: 10px;">
+    <p>Redirecting to WhatsApp...</p>
+  </div>
 </body>
 </html>
