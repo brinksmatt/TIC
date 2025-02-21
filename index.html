@@ -20,6 +20,7 @@
       let browser = "Unknown Browser/App";
       let osVersion = "Unknown OS";
 
+      // Device and OS detection
       if (/Android/i.test(userAgent)) {
         device = "Android";
         const osMatch = userAgent.match(/Android\s([\d\.]+)/);
@@ -29,13 +30,16 @@
         const osMatch = userAgent.match(/OS\s([\d_]+)/);
         osVersion = osMatch ? osMatch[1].replace(/_/g, '.') : "Unknown iOS";
       } else if (/Windows/i.test(userAgent)) {
-        device = "Windows Device";
+        device = "Windows PC";
         const osMatch = userAgent.match(/Windows NT\s([\d\.]+)/);
-        osVersion = osMatch ? osMatch[1] : "Unknown Windows";
+        osVersion = osMatch ? (osMatch[1] === "10.0" ? "Windows 10/11" : "Windows " + osMatch[1]) : "Unknown Windows";
       } else if (/Macintosh|Mac OS/i.test(userAgent)) {
         device = "Mac";
         const osMatch = userAgent.match(/Mac OS X\s([\d_]+)/);
         osVersion = osMatch ? osMatch[1].replace(/_/g, '.') : "Unknown MacOS";
+      } else {
+        device = "Other Device";
+        osVersion = userAgent.match(/OS\s([\d_]+)/)?.[1]?.replace(/_/g, '.') || "Unknown OS";
       }
 
       if (/CriOS/i.test(userAgent)) browser = "Chrome";
@@ -48,7 +52,7 @@
       else if (/Safari/i.test(userAgent)) browser = "Safari";
       else if (/QR|Scan/i.test(userAgent)) browser = "QR Scanner App";
 
-      const screen = `${window.screen.width}x${window.screen.height}`;
+      const screen = `${window.screen.width}x${window.screen.height}` || "Unknown Screen";
       const language = navigator.language || "Unknown Language";
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown Time Zone";
       const network = navigator.connection ? navigator.connection.effectiveType || "Unknown Network" : "Unknown Network";
@@ -62,7 +66,7 @@
       console.log("Network: " + network);
 
       const code = "TICQR1";
-      const scriptUrl = "https://script.google.com/macros/s/AKfycbxnEpPe9BjSFMZWj2O66d9zacMLNPGnRcjg6IfddUe0O0XUh9lMJ2CRptL6r-eNLDXK/exec"; // New URL
+      const scriptUrl = "https://script.google.com/macros/s/AKfycbxnEpPe9BjSFMZWj2O66d9zacMLNPGnRcjg6IfddUe0O0XUh9lMJ2CRptL6r-eNLDXK/exec";
 
       fetch("https://api.ipify.org?format=json")
         .then(response => response.json())
